@@ -1,26 +1,139 @@
 import UIKit
 import PlaygroundSupport
 
-func getEvenNumber (num: Int) -> Bool {
-    return num % 2 == 0
+enum Manufactor {
+    case vaz, gaz, kamaz
 }
 
-func getNumberDivByThree (num: Int) -> Bool {
-    return num % 3 == 0
+enum CarActions {
+    case engineOn, engineOff, windowsOpen, windowsClose
+    case trunkLoad(weight: Int)
+    case trunkUnload(weight: Int)
 }
 
-func makeArrayIncrease (numStart: Int, arrCount: Int) -> [Int] {
-    var arr: [Int] = []
-    for i in 0..<arrCount {
-        arr.append(numStart + i)
+struct Car {
+
+    let color: UIColor
+    let manufactor: Manufactor
+    let yearOfManufacture: Int
+    var trunkVolume: Int
+    let trunkVolumeMax: Int
+    var engineRunning: Bool
+    var windowsOpen: Bool
+
+    mutating func carAction(action: CarActions) {
+        switch action {
+        case .engineOn:
+            engineRunning == true ? print("двигатель уже запущен") : print("двигатель запущен")
+            engineRunning = true
+        case .engineOff:
+            engineRunning == false ? print("двигатель уже выключен") : print("двигатель выключен")
+            engineRunning = false
+        case .windowsOpen:
+            windowsOpen == true ? print("окна уже открыты") : print("окна открыты")
+            windowsOpen = true
+        case .windowsClose:
+            windowsOpen == false ? print("окна уже закрыты") : print("окна закрыты")
+            windowsOpen = false
+        case let .trunkLoad(weight) :
+            if trunkVolumeMax < trunkVolume + weight {
+                print("нехватает места, осталось \(trunkVolumeMax - trunkVolume)")
+            }
+            else {
+                trunkVolume += weight
+                print("разгружено \(trunkVolume)")
+            }
+        case let .trunkUnload(weight) :
+            if trunkVolume - weight < 0 {
+                print("нехватает места, осталось \(trunkVolume)")
+            }
+            else {
+                trunkVolume -= weight
+                print("разгружено \(trunkVolume)")
+            }
+        }
     }
-    return arr
+
+    init(color: UIColor, manufactor: Manufactor, yearOfManufacture: Int, trunkVolumeMax: Int) {
+        self.color = color
+        self.manufactor = manufactor
+        self.yearOfManufacture = yearOfManufacture
+        self.trunkVolumeMax = trunkVolumeMax
+        trunkVolume = 0
+        engineRunning = false
+        windowsOpen = false
+    }
+
 }
 
-var arr: [Int] = makeArrayIncrease(numStart: 1, arrCount: 100)
-for index in stride(from: arr.count - 1, through: 0, by: -1) {
-    if getNumberDivByThree(num: arr[index]) || getEvenNumber(num: arr[index]) {
-        arr.remove(at: index)
+struct Truck {
+
+    let color: UIColor
+    let manufactor: Manufactor
+    let yearOfManufacture: Int
+    var trunkVolume: Int
+    let trunkVolumeMax: Int
+    var engineRunning: Bool
+    var windowsOpen: Bool
+    mutating func carAction(action: CarActions) {
+        switch action {
+        case .engineOn:
+            engineRunning == true ? print("двигатель уже запущен") : print("двигатель запущен")
+            engineRunning = true
+        case .engineOff:
+            engineRunning == false ? print("двигатель уже выключен") : print("двигатель выключен")
+            engineRunning = false
+        case .windowsOpen:
+            windowsOpen == true ? print("окна уже открыты") : print("окна открыты")
+            windowsOpen = true
+        case .windowsClose:
+            windowsOpen == false ? print("окна уже закрыты") : print("окна закрыты")
+            windowsOpen = false
+        case let .trunkLoad(weight) :
+            if trunkVolumeMax < trunkVolume + weight {
+                print("нехватает места, осталось \(trunkVolumeMax - trunkVolume)")
+            }
+            else {
+                trunkVolume += weight
+                print("погружено \(trunkVolume)")
+            }
+        case let .trunkUnload(weight) :
+            if trunkVolume - weight < 0 {
+                print("нехватает места, осталось \(trunkVolume)")
+            }
+            else {
+                trunkVolume -= weight
+                print("разгружено \(trunkVolume)")
+            }
+        }
     }
+
+    init(color: UIColor, manufactor: Manufactor, yearOfManufacture: Int, trunkVolumeMax: Int) {
+        self.color = color
+        self.manufactor = manufactor
+        self.yearOfManufacture = yearOfManufacture
+        self.trunkVolumeMax = trunkVolumeMax
+        trunkVolume = 0
+        engineRunning = false
+        windowsOpen = false
+    }
+
 }
-print(arr)
+
+var car = Car(color: .red, manufactor: .vaz, yearOfManufacture: 1990, trunkVolumeMax: 350)
+
+car.carAction(action: .engineOn)
+car.carAction(action: .windowsOpen)
+car.carAction(action: .trunkLoad(weight: 100))
+car.carAction(action: .trunkLoad(weight: 300))
+
+var truck = Truck(color: .orange, manufactor: .kamaz, yearOfManufacture: 2015, trunkVolumeMax: 10000)
+
+truck.carAction(action: .engineOn)
+truck.carAction(action: .windowsClose)
+truck.carAction(action: .trunkLoad(weight: 10000))
+truck.carAction(action: .trunkUnload(weight: 5000))
+
+
+//print(car)
+//print(truck)
