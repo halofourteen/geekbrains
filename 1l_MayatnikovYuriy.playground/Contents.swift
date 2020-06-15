@@ -5,135 +5,103 @@ enum Manufactor {
     case vaz, gaz, kamaz
 }
 
-enum CarActions {
-    case engineOn, engineOff, windowsOpen, windowsClose
+enum Action {
     case trunkLoad(weight: Int)
     case trunkUnload(weight: Int)
+    case speedUp(speed: Int)
 }
 
-struct Car {
-
+class Car {
     let color: UIColor
     let manufactor: Manufactor
-    let yearOfManufacture: Int
-    var trunkVolume: Int
-    let trunkVolumeMax: Int
-    var engineRunning: Bool
-    var windowsOpen: Bool
+    let yearManufacture: Int
 
-    mutating func carAction(action: CarActions) {
+    func action(action: Action) {
+
+    }
+
+    func printProperties() {
+        print("Цвет color: \(color) manufactor: \(manufactor) yearManufacture: \(yearManufacture)")
+    }
+
+    init(color: UIColor, manufactor: Manufactor, yearManufacture: Int) {
+        self.color = color
+        self.manufactor = manufactor
+        self.yearManufacture = yearManufacture
+    }
+}
+
+class TrunkCar: Car {
+    let trunkValueMax: Int
+    var trunkValue: Int = 0
+
+    init(color: UIColor, manufactor: Manufactor, yearManufacture: Int, trunkValueMax: Int) {
+        self.trunkValueMax = trunkValueMax
+        super.init(color: color, manufactor: manufactor, yearManufacture: yearManufacture)
+    }
+
+    override func action(action: Action) {
         switch action {
-        case .engineOn:
-            engineRunning == true ? print("двигатель уже запущен") : print("двигатель запущен")
-            engineRunning = true
-        case .engineOff:
-            engineRunning == false ? print("двигатель уже выключен") : print("двигатель выключен")
-            engineRunning = false
-        case .windowsOpen:
-            windowsOpen == true ? print("окна уже открыты") : print("окна открыты")
-            windowsOpen = true
-        case .windowsClose:
-            windowsOpen == false ? print("окна уже закрыты") : print("окна закрыты")
-            windowsOpen = false
         case let .trunkLoad(weight) :
-            if trunkVolumeMax < trunkVolume + weight {
-                print("нехватает места, осталось \(trunkVolumeMax - trunkVolume)")
+            if trunkValueMax < trunkValue + weight {
+                print("Нехватает места, свободно \(trunkValueMax - trunkValue)")
             }
             else {
-                trunkVolume += weight
-                print("разгружено \(trunkVolume)")
+                trunkValue += weight
+                print("Успешно погружено \(trunkValue)")
             }
         case let .trunkUnload(weight) :
-            if trunkVolume - weight < 0 {
-                print("нехватает места, осталось \(trunkVolume)")
+            if trunkValue - weight < 0 {
+                print("В багажнике груза меньше, чем выгружается \(trunkValue)")
             }
             else {
-                trunkVolume -= weight
-                print("разгружено \(trunkVolume)")
+                trunkValue -= weight
+                print("Успешно выгружено \(trunkValue)")
             }
+        default :
+            print("Недоступно")
         }
     }
 
-    init(color: UIColor, manufactor: Manufactor, yearOfManufacture: Int, trunkVolumeMax: Int) {
-        self.color = color
-        self.manufactor = manufactor
-        self.yearOfManufacture = yearOfManufacture
-        self.trunkVolumeMax = trunkVolumeMax
-        trunkVolume = 0
-        engineRunning = false
-        windowsOpen = false
+    override func printProperties() {
+        super.printProperties()
+        print("trunkValueMax: \(trunkValueMax)\ntrunkValue: \(trunkValue)")
     }
-
 }
 
-struct Truck {
+class SportCar: Car {
+    var speed: Int
 
-    let color: UIColor
-    let manufactor: Manufactor
-    let yearOfManufacture: Int
-    var trunkVolume: Int
-    let trunkVolumeMax: Int
-    var engineRunning: Bool
-    var windowsOpen: Bool
-    mutating func carAction(action: CarActions) {
+    init(color: UIColor, manufactor: Manufactor, yearManufacture: Int, speed: Int) {
+        self.speed = speed
+        super.init(color: color, manufactor: manufactor, yearManufacture: yearManufacture)
+    }
+
+    override func action(action: Action) {
         switch action {
-        case .engineOn:
-            engineRunning == true ? print("двигатель уже запущен") : print("двигатель запущен")
-            engineRunning = true
-        case .engineOff:
-            engineRunning == false ? print("двигатель уже выключен") : print("двигатель выключен")
-            engineRunning = false
-        case .windowsOpen:
-            windowsOpen == true ? print("окна уже открыты") : print("окна открыты")
-            windowsOpen = true
-        case .windowsClose:
-            windowsOpen == false ? print("окна уже закрыты") : print("окна закрыты")
-            windowsOpen = false
-        case let .trunkLoad(weight) :
-            if trunkVolumeMax < trunkVolume + weight {
-                print("нехватает места, осталось \(trunkVolumeMax - trunkVolume)")
-            }
-            else {
-                trunkVolume += weight
-                print("погружено \(trunkVolume)")
-            }
-        case let .trunkUnload(weight) :
-            if trunkVolume - weight < 0 {
-                print("нехватает места, осталось \(trunkVolume)")
-            }
-            else {
-                trunkVolume -= weight
-                print("разгружено \(trunkVolume)")
-            }
+        case let .speedUp(speed) :
+            self.speed += speed
+            print("Скорость \(self.speed)")
+        default :
+            print("Недоступно")
         }
     }
 
-    init(color: UIColor, manufactor: Manufactor, yearOfManufacture: Int, trunkVolumeMax: Int) {
-        self.color = color
-        self.manufactor = manufactor
-        self.yearOfManufacture = yearOfManufacture
-        self.trunkVolumeMax = trunkVolumeMax
-        trunkVolume = 0
-        engineRunning = false
-        windowsOpen = false
+    override func printProperties() {
+        super.printProperties()
+        print("speed: \(speed)")
     }
-
 }
 
-var car = Car(color: .red, manufactor: .vaz, yearOfManufacture: 1990, trunkVolumeMax: 350)
+var trunkCar: TrunkCar = TrunkCar(color: .black, manufactor: .kamaz, yearManufacture: 1989, trunkValueMax: 100)
+var sportCar: SportCar = SportCar(color: .white, manufactor: .vaz, yearManufacture: 2015, speed: 180)
 
-car.carAction(action: .engineOn)
-car.carAction(action: .windowsOpen)
-car.carAction(action: .trunkLoad(weight: 100))
-car.carAction(action: .trunkLoad(weight: 300))
+trunkCar.action(action: .speedUp(speed: 10))
+trunkCar.action(action: .trunkLoad(weight: 5000))
+trunkCar.action(action: .trunkLoad(weight: 100))
 
-var truck = Truck(color: .orange, manufactor: .kamaz, yearOfManufacture: 2015, trunkVolumeMax: 10000)
+sportCar.action(action: .trunkLoad(weight: 10))
+sportCar.action(action: .speedUp(speed: 50))
 
-truck.carAction(action: .engineOn)
-truck.carAction(action: .windowsClose)
-truck.carAction(action: .trunkLoad(weight: 10000))
-truck.carAction(action: .trunkUnload(weight: 5000))
-
-
-//print(car)
-//print(truck)
+trunkCar.printProperties()
+sportCar.printProperties()
